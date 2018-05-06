@@ -136,11 +136,13 @@ void MainWindow::writeData(void)
 
 void MainWindow::readData(void)
 {
-	QString Text = ui->textBrowser->document()->toPlainText();
+	const auto Text = ui->textBrowser->toPlainText();
 
-	Text.append(Serial->readAll());
+	ui->textBrowser->setPlainText(Text + Serial->readAll());
 
-	ui->textBrowser->document()->setPlainText(Text);
+	auto Scrool = ui->textBrowser->verticalScrollBar();
+
+	Scrool->setValue(Scrool->maximum());
 }
 
 void MainWindow::closeClicked(void)

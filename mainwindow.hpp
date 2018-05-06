@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QSerialPort>
 #include <QMainWindow>
+#include <QScrollBar>
 #include <QSettings>
 
 #include "connectdialog.hpp"
