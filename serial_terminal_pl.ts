@@ -66,55 +66,108 @@ Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on użyteczny �
         <translation>Otwórz port</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="23"/>
+        <location filename="connectdialog.ui" line="36"/>
         <source>Port</source>
         <translation>Adres</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="37"/>
+        <location filename="connectdialog.ui" line="50"/>
         <source>Baud rate</source>
         <translation>Prędkość</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="44"/>
+        <location filename="connectdialog.ui" line="73"/>
         <source>Data size</source>
         <translation>Rozmiar danych</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="51"/>
+        <location filename="connectdialog.ui" line="96"/>
         <source>Stop bits</source>
         <translation>Bity stopu</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="58"/>
+        <location filename="connectdialog.ui" line="116"/>
         <source>Parity</source>
         <translation>Kontrola parzystości</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="66"/>
+        <location filename="connectdialog.ui" line="124"/>
         <source>No Parity</source>
         <translation>Brak bitu parzystości</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="71"/>
+        <location filename="connectdialog.ui" line="129"/>
         <source>Even Parity</source>
         <translation>Bit parzystości</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="76"/>
+        <location filename="connectdialog.ui" line="134"/>
         <source>Odd Parity</source>
         <translation>Bit nieparzystości</translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="107"/>
+        <location filename="connectdialog.ui" line="57"/>
         <source> bps</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="connectdialog.ui" line="123"/>
-        <location filename="connectdialog.ui" line="139"/>
+        <location filename="connectdialog.ui" line="80"/>
+        <location filename="connectdialog.ui" line="103"/>
         <source> b</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>FormatDialog</name>
+    <message>
+        <location filename="formatdialog.ui" line="14"/>
+        <source>Format options</source>
+        <translation>Opcje formatu</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="36"/>
+        <source>Type</source>
+        <translation>Rodzaj danych</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="47"/>
+        <source>Signed</source>
+        <translation>Ze znakiem</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="52"/>
+        <source>Unsigned</source>
+        <translation>Bez znaku</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="60"/>
+        <source>Order</source>
+        <translation>Porządek bajtów</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="71"/>
+        <source>Keep</source>
+        <translation>Zachowaj</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="76"/>
+        <source>Reverse</source>
+        <translation>Odwróć</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="84"/>
+        <source>Words</source>
+        <translation>Liczba słów</translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="94"/>
+        <source> B</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="formatdialog.ui" line="107"/>
+        <source>Base</source>
+        <translation>Podstawa systemu</translation>
     </message>
 </context>
 <context>
@@ -125,104 +178,163 @@ Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on użyteczny �
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="31"/>
+        <location filename="mainwindow.ui" line="34"/>
         <source>Send</source>
         <translation>Wyślij</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="49"/>
+        <location filename="mainwindow.ui" line="46"/>
         <source>Nothing</source>
         <translation>Brak końca wiersza</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="54"/>
+        <location filename="mainwindow.ui" line="51"/>
         <source>New line</source>
         <translation>Znak nowej linii</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="59"/>
+        <location filename="mainwindow.ui" line="56"/>
         <source>Carriage return</source>
         <translation>Znak powrotu karetki</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="77"/>
+        <location filename="mainwindow.ui" line="81"/>
         <source>Device</source>
         <translation>Urządzenie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="86"/>
+        <location filename="mainwindow.ui" line="91"/>
         <source>Help</source>
         <translation>Pomoc</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="95"/>
+        <location filename="mainwindow.ui" line="97"/>
+        <source>Mode</source>
+        <translation>Tryb</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="109"/>
         <source>Tools</source>
         <translation>Narzędzia</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="117"/>
+        <location filename="mainwindow.ui" line="136"/>
         <source>Support</source>
         <translation>Wsparcie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="143"/>
+        <location filename="mainwindow.ui" line="162"/>
         <source>Open</source>
         <translation>Otwórz</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="146"/>
+        <location filename="mainwindow.ui" line="165"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="155"/>
+        <location filename="mainwindow.ui" line="174"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="158"/>
+        <location filename="mainwindow.ui" line="177"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="167"/>
+        <location filename="mainwindow.ui" line="186"/>
         <source>Exit</source>
         <translation>Zakończ</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="176"/>
+        <location filename="mainwindow.ui" line="195"/>
         <source>About</source>
         <translation>O programie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="179"/>
+        <location filename="mainwindow.ui" line="198"/>
         <source>F1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="191"/>
-        <source>Autoclear</source>
-        <translation>Wyczyść po wysłaniu</translation>
+        <location filename="mainwindow.ui" line="210"/>
+        <source>Autoclear edit</source>
+        <translation>Wyczyść wejście po wysłaniu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="194"/>
+        <location filename="mainwindow.ui" line="237"/>
+        <source>Auto scroll</source>
+        <translation>Automatycznie przesuń tekst</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="249"/>
+        <source>Text mode</source>
+        <translation>Tryb tekstowy</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="258"/>
+        <source>Save</source>
+        <translation>Zapisz</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="267"/>
+        <source>Format</source>
+        <translation>Format</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="279"/>
+        <source>Raw mode</source>
+        <translation>Tryb liczbowy</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="291"/>
+        <source>Plot mode</source>
+        <translation>Tryb wykresu</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="302"/>
+        <source>Autoclear view</source>
+        <translation>Wyczyść wyjście po wysłaniu</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="305"/>
+        <source>F3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Autoclear</source>
+        <translation type="vanished">Wyczyść po wysłaniu</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="213"/>
         <source>F2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="202"/>
+        <location filename="mainwindow.ui" line="222"/>
         <source>Clear</source>
         <translation>Wyczyść historie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="205"/>
+        <location filename="mainwindow.ui" line="225"/>
         <source>F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="103"/>
+        <location filename="mainwindow.cpp" line="139"/>
         <source>Error</source>
         <translation>Błąd</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="315"/>
+        <source>Save data</source>
+        <translation>Zapisz dane</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="315"/>
+        <source>Text files (*.txt);;All files (*.*)</source>
+        <translation>Pliki tekstowe (*.txt);;Wszystkie pliki (*.*)</translation>
     </message>
 </context>
 </TS>
