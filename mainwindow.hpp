@@ -21,18 +21,16 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include <QTextStream>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QSerialPort>
-#include <QMainWindow>
-#include <QByteArray>
-#include <QScrollBar>
-#include <QSettings>
+#include <QtWidgets>
+#include <QtCharts>
+#include <QtCore>
+#include <QtGui>
 
 #include "connectdialog.hpp"
 #include "formatdialog.hpp"
 #include "aboutdialog.hpp"
+
+#include "chartobject.hpp"
 
 namespace Ui
 {
@@ -49,6 +47,11 @@ class MainWindow : public QMainWindow
 		QByteArray Rawdata;
 
 		QSerialPort* Serial;
+
+		QTextBrowser* textBrowser;
+		QChartView* chartView;
+
+		ChartObject* Chart;
 
 		ConnectDialog* Connect;
 		AboutDialog* About;
@@ -74,6 +77,11 @@ class MainWindow : public QMainWindow
 							    bool reverse = false);
 
 		template <typename Data>
+		static QVector<double> castAs(const void* ptr,
+								size_t len,
+								bool reverse = false);
+
+		template <typename Data>
 		static Data reverseEn(const Data& data);
 
 	private slots:
@@ -89,7 +97,7 @@ class MainWindow : public QMainWindow
 		void appendData(const QByteArray& data);
 
 		void switchFormat(int Type, int Words, int Base, bool Order);
-		void switchMode(bool mode);
+		void switchMode(void);
 
 		void writeData(void);
 		void readData(void);

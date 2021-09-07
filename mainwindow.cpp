@@ -26,9 +26,26 @@ MainWindow::MainWindow(QWidget* Parent)
 {
 	ui->setupUi(this);
 
+	QActionGroup* group = new QActionGroup(this);
+	group->addAction(ui->actionRawmode);
+	group->addAction(ui->actionPlotmode);
+	group->addAction(ui->actionTextmode);
+	group->setExclusive(true);
+
 	Serial = new QSerialPort(this);
 	Connect = new ConnectDialog(this);
 	About = new AboutDialog(this);
+
+	Chart = new ChartObject();
+
+	textBrowser = new QTextBrowser(this);
+	chartView = new QChartView(Chart, this);
+
+	chartView->setRenderHint(QPainter::Antialiasing);
+	chartView->setVisible(false);
+
+	ui->horizontalLayout->addWidget(textBrowser);
+	ui->horizontalLayout->addWidget(chartView);
 
 	QSettings Settings("K-OSP", "Serial-Terminal");
 
@@ -38,8 +55,11 @@ MainWindow::MainWindow(QWidget* Parent)
 	Settings.endGroup();
 
 	Settings.beginGroup("Widgets");
-	ui->actionAutoclear->setChecked(Settings.value("autoclear", true).toBool());
+	ui->actionAutoclearedit->setChecked(Settings.value("autoclear", true).toBool());
+	ui->actionAutoclearview->setChecked(Settings.value("cutview", false).toBool());
 	ui->actionAutoscroll->setChecked(Settings.value("autoscroll", true).toBool());
+	ui->actionRawmode->setChecked(Settings.value("rawmode", false).toBool());
+	ui->actionPlotmode->setChecked(Settings.value("plotmode", false).toBool());
 	ui->actionTextmode->setChecked(Settings.value("textmode", true).toBool());
 	Settings.endGroup();
 
@@ -49,21 +69,24 @@ MainWindow::MainWindow(QWidget* Parent)
 	words = Settings.value("worlds", 1).toInt();
 	Settings.endGroup();
 
-	connect(Connect, &ConnectDialog::onAccepted, this, &MainWindow::configureSerial);
-
-	connect(ui->actionOpen, &QAction::triggered, Connect, &ConnectDialog::open);
-	connect(ui->actionClose, &QAction::triggered, this, &MainWindow::closeClicked);
-	connect(ui->actionAbout, &QAction::triggered, About, &AboutDialog::open);
-
-	connect(Serial, &QSerialPort::readyRead, this, &MainWindow::readData);
-	connect(Serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
-
 	ui->sendButton->setEnabled(false);
 	ui->textEdit->setEnabled(false);
 
 	ui->breakCombo->setItemData(0, QString());
 	ui->breakCombo->setItemData(1, QString("\n"));
 	ui->breakCombo->setItemData(2, QString("\r"));
+
+	connect(Connect, &ConnectDialog::onAccepted, this, &MainWindow::configureSerial);
+
+	connect(ui->actionOpen, &QAction::triggered, Connect, &ConnectDialog::open);
+	connect(ui->actionAbout, &QAction::triggered, About, &AboutDialog::open);
+
+	connect(Serial, &QSerialPort::readyRead, this, &MainWindow::readData);
+	connect(Serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
+
+	connect(group, &QActionGroup::triggered, this, &MainWindow::switchMode);
+
+	switchMode();
 }
 
 MainWindow::~MainWindow(void)
@@ -76,8 +99,11 @@ MainWindow::~MainWindow(void)
 	Settings.endGroup();
 
 	Settings.beginGroup("Widgets");
-	Settings.setValue("autoclear", ui->actionAutoclear->isChecked());
+	Settings.setValue("autoclear", ui->actionAutoclearedit->isChecked());
+	Settings.setValue("cutview", ui->actionAutoclearview->isChecked());
 	Settings.setValue("autoscroll", ui->actionAutoscroll->isChecked());
+	Settings.setValue("rawmode", ui->actionRawmode->isChecked());
+	Settings.setValue("plotmode", ui->actionPlotmode->isChecked());
 	Settings.setValue("textmode", ui->actionTextmode->isChecked());
 	Settings.endGroup();
 
@@ -128,15 +154,16 @@ void MainWindow::handleError(QSerialPort::SerialPortError Error)
 
 void MainWindow::appendData(const QByteArray& data)
 {
-	QStringList lines;
-
 	if (ui->actionTextmode->isChecked())
 	{
-		ui->textBrowser->append(QString::fromLocal8Bit(data));
+		textBrowser->append(QString::fromLocal8Bit(data));
+
+		if (ui->actionAutoscroll->isChecked()) scrollDown();
 	}
 	else
 	{
-		std::function<QStringList (const void*, size_t, int, bool)> fn;
+		std::function<QStringList (const void*, size_t, int, bool)> fnConvert;
+		std::function<QVector<double> (const void*, size_t, bool)> fnCast;
 
 		const int count = Rawdata.size();
 		const int rest = count % words;
@@ -147,37 +174,68 @@ void MainWindow::appendData(const QByteArray& data)
 			newdata.push_front(Rawdata[count - 1 - i]);
 		}
 
-		switch (wtype)
+		if (ui->actionRawmode->isChecked()) switch (wtype)
 		{
 			case 0: switch (words)
 				{
-					case 8: fn = convertAs<int64_t>; break;
-					case 4: fn = convertAs<int32_t>; break;
-					case 2: fn = convertAs<int16_t>; break;
-					case 1: fn = convertAs<int8_t>; break;
+					case 8: fnConvert = convertAs<int64_t>; break;
+					case 4: fnConvert = convertAs<int32_t>; break;
+					case 2: fnConvert = convertAs<int16_t>; break;
+					case 1: fnConvert = convertAs<int8_t>; break;
 				}
 			break;
 			case 1: switch (words)
 				{
-					case 8: fn = convertAs<uint64_t>; break;
-					case 4: fn = convertAs<uint32_t>; break;
-					case 2: fn = convertAs<uint16_t>; break;
-					case 1: fn = convertAs<uint8_t>; break;
+					case 8: fnConvert = convertAs<uint64_t>; break;
+					case 4: fnConvert = convertAs<uint32_t>; break;
+					case 2: fnConvert = convertAs<uint16_t>; break;
+					case 1: fnConvert = convertAs<uint8_t>; break;
+				}
+			break;
+		}
+		else switch (wtype)
+		{
+			case 0: switch (words)
+				{
+					case 8: fnCast = castAs<int64_t>; break;
+					case 4: fnCast = castAs<int32_t>; break;
+					case 2: fnCast = castAs<int16_t>; break;
+					case 1: fnCast = castAs<int8_t>; break;
+				}
+			break;
+			case 1: switch (words)
+				{
+					case 8: fnCast = castAs<uint64_t>; break;
+					case 4: fnCast = castAs<uint32_t>; break;
+					case 2: fnCast = castAs<uint16_t>; break;
+					case 1: fnCast = castAs<uint8_t>; break;
 				}
 			break;
 		}
 
 		if (newdata.size() / words > 0)
-			ui->textBrowser->append(fn(newdata.data(),
-								  newdata.length(),
-								  10, msbf)
-							    .join('\n'));
-	}
+		{
+			if (ui->actionRawmode->isChecked())
+			{
+				textBrowser->append(fnConvert(newdata.data(),
+										newdata.length(),
+										10, msbf)
+								.join('\n'));
 
-	if (!lines.isEmpty())
-	{
-		ui->textBrowser->append(lines.join(' '));
-		ui->textBrowser->append("\n");
+				if (ui->actionAutoscroll->isChecked()) scrollDown();
+			}
+			else
+			{
+				for (const auto& d : fnCast(newdata.data(),
+									   newdata.length(),
+									   msbf))
+				{
+					Chart->appendData(d);
+				}
+
+				Chart->format();
+			}
+		}
 	}
 
 	Rawdata.append(data);
@@ -197,24 +255,21 @@ void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
 	{
 		const auto data = Rawdata;
 
-		ui->textBrowser->clear();
-		Rawdata.clear();
-
+		clearData();
 		appendData(data);
 	}
 }
 
-void MainWindow::switchMode(bool mode)
+void MainWindow::switchMode(void)
 {
-	if (sender() != ui->actionTextmode)
-		if (mode == ui->actionTextmode->isChecked())
-			return;
+	textBrowser->setVisible(ui->actionRawmode->isChecked() ||
+					    ui->actionTextmode->isChecked());
+
+	chartView->setVisible(ui->actionPlotmode->isChecked());
 
 	const auto data = Rawdata;
 
-	ui->textBrowser->clear();
-	Rawdata.clear();
-
+	clearData();
 	appendData(data);
 }
 
@@ -228,9 +283,14 @@ void MainWindow::writeData(void)
 
 	if (Data.isEmpty()) return;
 
+	if (ui->actionAutoclearview->isChecked())
+	{
+		clearData();
+	}
+
 	Serial->write(Data.toUtf8());
 
-	if (ui->actionAutoclear->isChecked())
+	if (ui->actionAutoclearedit->isChecked())
 	{
 		ui->textEdit->clear();
 	}
@@ -244,6 +304,8 @@ void MainWindow::readData(void)
 
 void MainWindow::clearData(void)
 {
+	textBrowser->clear();
+	Chart->clear();
 	Rawdata.clear();
 }
 
@@ -257,7 +319,7 @@ void MainWindow::saveData(void)
 	QFile file(path); QTextStream stream(&file);
 
 	if (!file.open(QFile::WriteOnly | QFile::Text)) return;
-	else stream << ui->textBrowser->toPlainText();
+	else stream << textBrowser->toPlainText();
 }
 
 void MainWindow::formatData(void)
@@ -278,12 +340,9 @@ void MainWindow::closeClicked(void)
 
 void MainWindow::scrollDown(void)
 {
-	auto Scrool = ui->textBrowser->verticalScrollBar();
+	auto Scrool = textBrowser->verticalScrollBar();
 
-	if (ui->actionAutoscroll->isChecked())
-	{
-		Scrool->setValue(Scrool->maximum());
-	}
+	Scrool->setValue(Scrool->maximum());
 }
 
 template<typename Data>
@@ -331,4 +390,23 @@ Data MainWindow::reverseEn(const Data& data)
 	}
 
 	return res;
+}
+
+template<typename Data>
+QVector<double> MainWindow::castAs(const void* ptr, size_t len, bool reverse)
+{
+	const Data* data = static_cast<const Data*>(ptr);
+	const size_t size = len / sizeof(Data);
+
+	QVector<double> list;
+	list.reserve(len);
+
+	for (size_t i = 0; i < size; ++i)
+	{
+		list.append(reverse ?
+					  reverseEn(data[i]) :
+					  data[i]);
+	}
+
+	return list;
 }

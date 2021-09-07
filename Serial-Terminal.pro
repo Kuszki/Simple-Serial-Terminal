@@ -18,7 +18,7 @@
 #                                                                         *
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-QT		+=	core gui widgets serialport
+QT		+=	core gui widgets serialport charts
 
 TARGET	=	Serial-Terminal
 TEMPLATE	=	app
@@ -26,6 +26,7 @@ TEMPLATE	=	app
 CONFIG	+=	c++19
 
 SOURCES	+=	main.cpp \
+			chartobject.cpp \
 			formatdialog.cpp \
 			mainwindow.cpp \
 			aboutdialog.cpp \
@@ -33,6 +34,7 @@ SOURCES	+=	main.cpp \
 
 HEADERS	+=	mainwindow.hpp \
 			aboutdialog.hpp \
+			chartobject.hpp \
 			connectdialog.hpp \
 			formatdialog.hpp
 
