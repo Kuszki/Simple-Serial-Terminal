@@ -21,13 +21,17 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include <QTextStream>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSerialPort>
 #include <QMainWindow>
+#include <QByteArray>
 #include <QScrollBar>
 #include <QSettings>
 
 #include "connectdialog.hpp"
+#include "formatdialog.hpp"
 #include "aboutdialog.hpp"
 
 namespace Ui
@@ -42,6 +46,8 @@ class MainWindow : public QMainWindow
 
 	private:
 
+		QByteArray Rawdata;
+
 		QSerialPort* Serial;
 
 		ConnectDialog* Connect;
@@ -49,10 +55,26 @@ class MainWindow : public QMainWindow
 
 		Ui::MainWindow* ui;
 
+		int words = 1;
+		int wtype = 0;
+		int wbase = 10;
+		bool msbf = 0;
+
 	public:
 
 		explicit MainWindow(QWidget* Parent = nullptr);
 		virtual ~MainWindow(void) override;
+
+	private:
+
+		template <typename Data>
+		static QStringList convertAs(const void* ptr,
+							    size_t len,
+							    int base = 10,
+							    bool reverse = false);
+
+		template <typename Data>
+		static Data reverseEn(const Data& data);
 
 	private slots:
 
@@ -64,10 +86,20 @@ class MainWindow : public QMainWindow
 		void errorMessage(const QString& Message);
 		void handleError(QSerialPort::SerialPortError Error);
 
+		void appendData(const QByteArray& data);
+
+		void switchFormat(int Type, int Words, int Base, bool Order);
+		void switchMode(bool mode);
+
 		void writeData(void);
 		void readData(void);
+		void clearData(void);
+		void saveData(void);
+		void formatData(void);
 
 		void closeClicked(void);
+
+		void scrollDown(void);
 
 };
 

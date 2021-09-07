@@ -1,7 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                         *
- *  Simple Serial terminal                                                 *
- *  Copyright (C) 2018  Łukasz "Kuszki" Dróżdż  l.drozdz@openmailbox.org   *
+ *  {description}                                                          *
+ *  Copyright (C) 2020  Łukasz "Kuszki" Dróżdż  lukasz.kuszki@gmail.com    *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -18,35 +18,44 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#ifndef FORMATDIALOG_HPP
+#define FORMATDIALOG_HPP
+
 #include <QtWidgets>
 #include <QtCore>
 #include <QtGui>
 
-#include "mainwindow.hpp"
-
-int main(int argc, char *argv[])
+namespace Ui
 {
-	QApplication a(argc, argv);
-
-	a.setApplicationName("Simple Serial Terminal");
-	a.setOrganizationName("Łukasz \"Kuszki\" Dróżdż");
-	a.setOrganizationDomain("https://github.com/Kuszki/Simple-Serial-Terminal");
-	a.setApplicationVersion("1.0");
-
-	QTranslator qtTranslator;
-	qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-	a.installTranslator(&qtTranslator);
-
-	QTranslator baseTranslator;
-	baseTranslator.load("qtbase_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-	a.installTranslator(&baseTranslator);
-
-	QTranslator appTranslator;
-	appTranslator.load("serial_terminal_" + QLocale::system().name());
-	a.installTranslator(&appTranslator);
-
-	MainWindow w;
-	w.show();
-
-	return a.exec();
+	class FormatDialog;
 }
+
+class FormatDialog : public QDialog
+{
+
+		Q_OBJECT
+
+	private:
+
+		Ui::FormatDialog *ui;
+
+	public:
+
+		explicit FormatDialog(QWidget *parent = nullptr);
+		virtual ~FormatDialog(void) override;
+
+	public slots:
+
+		virtual void accept(void) override;
+
+	private slots:
+
+		void wordsChanged(int size);
+
+	signals:
+
+		void onAccepted(int, int, int, bool);
+
+};
+
+#endif // FORMATDIALOG_HPP

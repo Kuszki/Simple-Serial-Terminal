@@ -69,7 +69,7 @@
      <x>0</x>
      <y>0</y>
      <width>626</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDevice">
@@ -78,6 +78,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
+    <addaction name="actionFormat"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -109,7 +110,12 @@
    <addaction name="actionOpen"/>
    <addaction name="actionClose"/>
    <addaction name="separator"/>
+   <addaction name="actionSave"/>
    <addaction name="actionClear"/>
+   <addaction name="separator"/>
+   <addaction name="actionFormat"/>
+   <addaction name="actionTextmode"/>
+   <addaction name="actionAutoscroll"/>
    <addaction name="actionAutoclear"/>
   </widget>
   <widget class="QToolBar" name="helpTool">
@@ -196,13 +202,55 @@
   </action>
   <action name="actionClear">
    <property name="icon">
-    <iconset theme="edit-delete"/>
+    <iconset theme="edit-delete">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Clear</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="actionAutoscroll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="go-down">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Auto scroll</string>
+   </property>
+  </action>
+  <action name="actionTextmode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="tools-check-spelling">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Text mode</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionFormat">
+   <property name="icon">
+    <iconset theme="preferences-system"/>
+   </property>
+   <property name="text">
+    <string>Format</string>
    </property>
   </action>
  </widget>
@@ -216,8 +264,8 @@
    <slot>writeData()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>526</x>
-     <y>494</y>
+     <x>462</x>
+     <y>504</y>
     </hint>
     <hint type="destinationlabel">
      <x>541</x>
@@ -273,8 +321,76 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionClear</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clearData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionTextmode</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>switchMode(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFormat</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>formatData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>writeData()</slot>
+  <slot>clearData()</slot>
+  <slot>switchMode(bool)</slot>
+  <slot>saveData()</slot>
+  <slot>formatData()</slot>
  </slots>
 </ui>

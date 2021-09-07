@@ -23,6 +23,7 @@
 
 #include <QSerialPortInfo>
 #include <QSerialPort>
+#include <QSettings>
 #include <QDialog>
 
 namespace Ui
@@ -43,6 +44,10 @@ class ConnectDialog : public QDialog
 
 		explicit ConnectDialog(QWidget* Parent = nullptr);
 		virtual ~ConnectDialog(void) override;
+
+	protected:
+
+		void reloadDevices(const QString& last = QString());
 
 	public slots:
 

@@ -23,23 +23,26 @@ QT		+=	core gui widgets serialport
 TARGET	=	Serial-Terminal
 TEMPLATE	=	app
 
-CONFIG	+=	c++14
+CONFIG	+=	c++19
 
 SOURCES	+=	main.cpp \
+			formatdialog.cpp \
 			mainwindow.cpp \
 			aboutdialog.cpp \
 			connectdialog.cpp
 
 HEADERS	+=	mainwindow.hpp \
 			aboutdialog.hpp \
-			connectdialog.hpp
+			connectdialog.hpp \
+			formatdialog.hpp
 
 FORMS	+=	mainwindow.ui \
 			aboutdialog.ui \
-			connectdialog.ui
+			connectdialog.ui \
+			formatdialog.ui
 
 RESOURCES	+=	resources.qrc
 
 TRANSLATIONS	+=	serial_terminal_pl.ts
 
-QMAKE_CXXFLAGS	+=	-s -march=native -std=c++14
+QMAKE_CXXFLAGS	+=	-s -march=native

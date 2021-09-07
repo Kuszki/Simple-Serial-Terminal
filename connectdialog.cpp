@@ -24,7 +24,17 @@
 ConnectDialog::ConnectDialog(QWidget* Parent)
 : QDialog(Parent), ui(new Ui::ConnectDialog)
 {
-	ui->setupUi(this);
+	ui->setupUi(this); reloadDevices();
+
+	QSettings Settings("K-OSP", "Serial-Terminal");
+
+	Settings.beginGroup("Connection");
+	ui->portCombo->setCurrentText(Settings.value("device").toString());
+	ui->parityCombo->setCurrentIndex(Settings.value("parity", 0).toInt());
+	ui->stopSpin->setValue(Settings.value("stop", 1).toInt());
+	ui->sizeSpin->setValue(Settings.value("data", 8).toInt());
+	ui->baudSpin->setValue(Settings.value("baud", 9600).toInt());
+	Settings.endGroup();
 }
 
 ConnectDialog::~ConnectDialog(void)
@@ -32,10 +42,8 @@ ConnectDialog::~ConnectDialog(void)
 	delete ui;
 }
 
-void ConnectDialog::open(void)
+void ConnectDialog::reloadDevices(const QString& last)
 {
-	const QString Last = ui->portCombo->currentText();
-
 	ui->portCombo->clear();
 
 	for (const auto& Info : QSerialPortInfo::availablePorts())
@@ -43,9 +51,14 @@ void ConnectDialog::open(void)
 		ui->portCombo->addItem(Info.portName());
 	}
 
-	ui->portCombo->setCurrentText(Last);
+	ui->portCombo->setCurrentText(last);
+}
 
-	QDialog::open();
+void ConnectDialog::open(void)
+{
+	const QString Last = ui->portCombo->currentText();
+
+	reloadDevices(Last); QDialog::open();
 }
 
 void ConnectDialog::accept(void)
@@ -71,11 +84,26 @@ void ConnectDialog::accept(void)
 		{ 8, QSerialPort::Data8 }
 	};
 
-	QDialog::accept();
+	const QString port = ui->portCombo->currentText();
+	const int baud = ui->baudSpin->value();
 
-	emit onAccepted(
-			ui->portCombo->currentText(), ui->baudSpin->value(),
-			Parity.value(ui->parityCombo->currentIndex(), QSerialPort::UnknownParity),
-			Stop.value(ui->stopSpin->value(), QSerialPort::UnknownStopBits),
-			Size.value(ui->sizeSpin->value(), QSerialPort::UnknownDataBits));
+	const int pari = ui->parityCombo->currentIndex();
+	const int stpv = ui->stopSpin->value();
+	const int sizv = ui->sizeSpin->value();
+
+	const auto par = Parity.value(pari, QSerialPort::UnknownParity);
+	const auto stp = Stop.value(stpv, QSerialPort::UnknownStopBits);
+	const auto siz = Size.value(sizv, QSerialPort::UnknownDataBits);
+
+	QSettings Settings("K-OSP", "Serial-Terminal");
+
+	Settings.beginGroup("Connection");
+	Settings.setValue("device", port);
+	Settings.setValue("parity", pari);
+	Settings.setValue("stop", stpv);
+	Settings.setValue("data", sizv);
+	Settings.setValue("baud", baud);
+	Settings.endGroup();
+
+	QDialog::accept(); emit onAccepted(port, baud, par, stp, siz);
 }
