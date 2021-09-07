@@ -37,6 +37,9 @@ MainWindow::MainWindow(QWidget* Parent)
 	About = new AboutDialog(this);
 
 	Chart = new ChartObject();
+	Chart->setBackgroundBrush(palette().brush(QPalette::Window));
+	Chart->setLabelsBrush(palette().brush(QPalette::Text));
+	Chart->setPalette(palette());
 
 	textBrowser = new QTextBrowser(this);
 	chartView = new QChartView(Chart, this);

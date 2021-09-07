@@ -49,6 +49,12 @@ ChartObject::ChartObject(QGraphicsItem* parent, Qt::WindowFlags wFlags)
 
 ChartObject::~ChartObject(void) {}
 
+void ChartObject::setLabelsBrush(const QBrush& brush)
+{
+	xAxis->setLabelsBrush(brush);
+	yAxis->setLabelsBrush(brush);
+}
+
 void ChartObject::appendData(double value)
 {
 	pSeries->append(step += 1.0, value);

@@ -44,6 +44,8 @@ class ChartObject : public QChart
 		explicit ChartObject(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = {});
 		virtual ~ChartObject(void) override;
 
+		void setLabelsBrush(const QBrush& brush);
+
 	public slots:
 
 		void appendData(double value);
