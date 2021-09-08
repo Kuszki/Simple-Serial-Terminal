@@ -76,5 +76,8 @@ void ChartObject::format(void)
 void ChartObject::clear(void)
 {
 	pSeries->clear();
+
 	step = 0.0;
+	ymin = NAN;
+	ymax = NAN;
 }
