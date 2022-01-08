@@ -18,61 +18,53 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef CHARTOBJECT_HPP
-#define CHARTOBJECT_HPP
+#include "chartview.hpp"
 
-#include <QtCharts>
-
-class ChartObject : public QChart
+ChartView::ChartView(QChart* chart, QWidget* parent)
+	: QChartView(chart, parent)
 {
+	setMouseTracking(true);
+}
 
-		Q_OBJECT
+ChartView::~ChartView(void) {}
 
-	private:
+void ChartView::mousePressEvent(QMouseEvent* event)
+{
+	if (event->buttons() == Qt::MiddleButton)
+	{
+		m_lastMousePos = event->pos();
+		event->accept();
+	}
+	else if (event->buttons() == Qt::RightButton)
+	{
+		emit onValueMouseover(chart()->mapToValue(event->pos()));
+	}
+	else QChartView::mousePressEvent(event);
+}
 
-		QLineSeries* pSeries;
-		QValueAxis* xAxis;
-		QValueAxis* yAxis;
+void ChartView::mouseMoveEvent(QMouseEvent* event)
+{
+	if (event->buttons() == Qt::MiddleButton)
+	{
+		auto dPos = event->pos() - m_lastMousePos;
+		chart()->scroll(-dPos.x(), dPos.y());
 
-		QRect rubberRect;
-		QPointF fromPoint;
-		QPointF toPoint;
+		m_lastMousePos = event->pos();
+		event->accept();
 
-		double scale = 0.0;
-		double step = 0.0;
+		QApplication::restoreOverrideCursor();
+	}
+	else if (event->buttons() == Qt::RightButton)
+	{
+		emit onValueMouseover(chart()->mapToValue(event->pos()));
+	}
 
-		double ymin = NAN;
-		double ymax = NAN;
+	QChartView::mouseMoveEvent(event);
+}
 
-	public:
+void ChartView::wheelEvent(QWheelEvent* event)
+{
+	if (event->angleDelta().y() > 0) chart()->zoom(1.1);
+	if (event->angleDelta().y() < 0) chart()->zoom(0.9);
+}
 
-		explicit ChartObject(bool spline = true,
-				QGraphicsItem *parent = nullptr,
-				Qt::WindowFlags wFlags = {});
-		virtual ~ChartObject(void) override;
-
-		void setLabelsBrush(const QBrush& brush);
-
-		QVector<double> getValues(void) const;
-
-		double getScale(void) const;
-
-	public slots:
-
-		void bandChanged(const QRect& rubberBandRect,
-					  const QPointF& fromScenePoint,
-					  const QPointF& toScenePoint);
-
-		void appendData(double value);
-		void setScale(double newScale);
-
-		void format(void);
-		void clear(void);
-
-	signals:
-
-		void onValueMouseover(const QPointF&);
-
-};
-
-#endif // CHARTOBJECT_HPP

@@ -27,6 +27,7 @@ CONFIG	+=	c++19
 
 SOURCES	+=	main.cpp \
 			chartobject.cpp \
+			chartview.cpp \
 			formatdialog.cpp \
 			mainwindow.cpp \
 			aboutdialog.cpp \
@@ -35,6 +36,7 @@ SOURCES	+=	main.cpp \
 HEADERS	+=	mainwindow.hpp \
 			aboutdialog.hpp \
 			chartobject.hpp \
+			chartview.hpp \
 			connectdialog.hpp \
 			formatdialog.hpp
 

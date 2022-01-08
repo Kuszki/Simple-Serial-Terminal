@@ -31,6 +31,7 @@
 #include "aboutdialog.hpp"
 
 #include "chartobject.hpp"
+#include "chartview.hpp"
 
 namespace Ui
 {
@@ -49,8 +50,9 @@ class MainWindow : public QMainWindow
 		QSerialPort* Serial;
 
 		QTextBrowser* textBrowser;
-		QChartView* chartView;
+		QDoubleSpinBox* scaleSpin;
 
+		ChartView* chartView;
 		ChartObject* Chart;
 
 		ConnectDialog* Connect;
@@ -90,6 +92,8 @@ class MainWindow : public QMainWindow
 						 QSerialPort::Parity Parity,
 						 QSerialPort::StopBits Stop,
 						 QSerialPort::DataBits Size);
+
+		void updateTooltip(const QPointF& point);
 
 		void errorMessage(const QString& Message);
 		void handleError(QSerialPort::SerialPortError Error);

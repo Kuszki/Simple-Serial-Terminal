@@ -18,56 +18,33 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef CHARTOBJECT_HPP
-#define CHARTOBJECT_HPP
+#ifndef CHARTVIEW_HPP
+#define CHARTVIEW_HPP
 
+#include <QtWidgets>
 #include <QtCharts>
+#include <QtCore>
+#include <QtGui>
 
-class ChartObject : public QChart
+class ChartView : public QChartView
 {
 
 		Q_OBJECT
 
 	private:
 
-		QLineSeries* pSeries;
-		QValueAxis* xAxis;
-		QValueAxis* yAxis;
-
-		QRect rubberRect;
-		QPointF fromPoint;
-		QPointF toPoint;
-
-		double scale = 0.0;
-		double step = 0.0;
-
-		double ymin = NAN;
-		double ymax = NAN;
+		QPointF m_lastMousePos;
 
 	public:
 
-		explicit ChartObject(bool spline = true,
-				QGraphicsItem *parent = nullptr,
-				Qt::WindowFlags wFlags = {});
-		virtual ~ChartObject(void) override;
+		explicit ChartView(QChart *chart, QWidget *parent = nullptr);
+		virtual ~ChartView(void) override;
 
-		void setLabelsBrush(const QBrush& brush);
+	protected:
 
-		QVector<double> getValues(void) const;
-
-		double getScale(void) const;
-
-	public slots:
-
-		void bandChanged(const QRect& rubberBandRect,
-					  const QPointF& fromScenePoint,
-					  const QPointF& toScenePoint);
-
-		void appendData(double value);
-		void setScale(double newScale);
-
-		void format(void);
-		void clear(void);
+		virtual void mousePressEvent(QMouseEvent *event) override;
+		virtual void mouseMoveEvent(QMouseEvent *event) override;
+		virtual void wheelEvent(QWheelEvent *event) override;
 
 	signals:
 
@@ -75,4 +52,4 @@ class ChartObject : public QChart
 
 };
 
-#endif // CHARTOBJECT_HPP
+#endif // CHARTVIEW_HPP

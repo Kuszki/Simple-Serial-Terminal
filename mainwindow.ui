@@ -73,7 +73,7 @@
      <x>0</x>
      <y>0</y>
      <width>626</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDevice">
@@ -130,6 +130,10 @@
    <addaction name="actionAutoscroll"/>
    <addaction name="actionAutoclearedit"/>
    <addaction name="actionAutoclearview"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoomin"/>
+   <addaction name="actionZoomout"/>
+   <addaction name="actionZoomfit"/>
   </widget>
   <widget class="QToolBar" name="helpTool">
    <property name="windowTitle">
@@ -153,6 +157,7 @@
    <addaction name="actionAbout"/>
    <addaction name="actionExit"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset theme="network-wired">
@@ -257,6 +262,9 @@
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionFormat">
    <property name="icon">
@@ -296,7 +304,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="edit-cut"/>
+    <iconset theme="edit-cut">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Autoclear view</string>
@@ -305,8 +314,49 @@
     <string>F3</string>
    </property>
   </action>
+  <action name="actionZoomin">
+   <property name="icon">
+    <iconset theme="zoom-in">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="actionZoomout">
+   <property name="icon">
+    <iconset theme="zoom-out">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="actionZoomfit">
+   <property name="icon">
+    <iconset theme="zoom-fit-best">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom fit</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>textEdit</tabstop>
+  <tabstop>breakCombo</tabstop>
+  <tabstop>sendButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

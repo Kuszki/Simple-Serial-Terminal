@@ -218,88 +218,123 @@ Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on użyteczny �
         <translation>Narzędzia</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="136"/>
+        <location filename="mainwindow.ui" line="140"/>
         <source>Support</source>
         <translation>Wsparcie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="162"/>
+        <location filename="mainwindow.ui" line="167"/>
         <source>Open</source>
         <translation>Otwórz</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="165"/>
+        <location filename="mainwindow.ui" line="170"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="174"/>
+        <location filename="mainwindow.ui" line="179"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="177"/>
+        <location filename="mainwindow.ui" line="182"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="186"/>
+        <location filename="mainwindow.ui" line="191"/>
         <source>Exit</source>
         <translation>Zakończ</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="195"/>
+        <location filename="mainwindow.ui" line="200"/>
         <source>About</source>
         <translation>O programie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="198"/>
+        <location filename="mainwindow.ui" line="203"/>
         <source>F1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="210"/>
+        <location filename="mainwindow.ui" line="215"/>
         <source>Autoclear edit</source>
         <translation>Wyczyść wejście po wysłaniu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="237"/>
+        <location filename="mainwindow.ui" line="242"/>
         <source>Auto scroll</source>
         <translation>Automatycznie przesuń tekst</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="249"/>
+        <location filename="mainwindow.ui" line="254"/>
         <source>Text mode</source>
         <translation>Tryb tekstowy</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="258"/>
+        <location filename="mainwindow.ui" line="263"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="267"/>
+        <location filename="mainwindow.ui" line="266"/>
+        <source>Ctrl+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="275"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="279"/>
+        <location filename="mainwindow.ui" line="287"/>
         <source>Raw mode</source>
         <translation>Tryb liczbowy</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="291"/>
+        <location filename="mainwindow.ui" line="299"/>
         <source>Plot mode</source>
         <translation>Tryb wykresu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="302"/>
+        <location filename="mainwindow.ui" line="311"/>
         <source>Autoclear view</source>
         <translation>Wyczyść wyjście po wysłaniu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="305"/>
+        <location filename="mainwindow.ui" line="314"/>
         <source>F3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="323"/>
+        <source>Zoom in</source>
+        <translation>Zbliż</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="326"/>
+        <source>+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="335"/>
+        <source>Zoom out</source>
+        <translation>Oddal</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="338"/>
+        <source>-</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="347"/>
+        <source>Zoom fit</source>
+        <translation>Dopasuj</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="350"/>
+        <source>F6</source>
         <translation></translation>
     </message>
     <message>
@@ -307,32 +342,37 @@ Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on użyteczny �
         <translation type="vanished">Wyczyść po wysłaniu</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="213"/>
+        <location filename="mainwindow.ui" line="218"/>
         <source>F2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="222"/>
+        <location filename="mainwindow.ui" line="227"/>
         <source>Clear</source>
         <translation>Wyczyść historie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="225"/>
+        <location filename="mainwindow.ui" line="230"/>
         <source>F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="139"/>
+        <location filename="mainwindow.cpp" line="53"/>
+        <source>Scale </source>
+        <translation>Skalowanie </translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="203"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="315"/>
+        <location filename="mainwindow.cpp" line="379"/>
         <source>Save data</source>
         <translation>Zapisz dane</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="315"/>
+        <location filename="mainwindow.cpp" line="379"/>
         <source>Text files (*.txt);;All files (*.*)</source>
         <translation>Pliki tekstowe (*.txt);;Wszystkie pliki (*.*)</translation>
     </message>

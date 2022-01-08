@@ -22,9 +22,12 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* Parent)
-: QMainWindow(Parent), ui(new Ui::MainWindow)
+	: QMainWindow(Parent)
+	, ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+
+	QSettings Settings("K-OSP", "Serial-Terminal");
 
 	QActionGroup* group = new QActionGroup(this);
 	group->addAction(ui->actionRawmode);
@@ -36,21 +39,38 @@ MainWindow::MainWindow(QWidget* Parent)
 	Connect = new ConnectDialog(this);
 	About = new AboutDialog(this);
 
-	Chart = new ChartObject();
+	Settings.beginGroup("Chart");
+	Chart = new ChartObject(Settings.value("spline", false).toBool());
 	Chart->setBackgroundBrush(palette().brush(QPalette::Window));
 	Chart->setLabelsBrush(palette().brush(QPalette::Text));
 	Chart->setPalette(palette());
+	Settings.endGroup();
 
 	textBrowser = new QTextBrowser(this);
-	chartView = new QChartView(Chart, this);
+	chartView = new ChartView(Chart, this);
+	scaleSpin = new QDoubleSpinBox(this);
+
+	scaleSpin->setPrefix(tr("Scale "));
+	scaleSpin->setMinimum(0.0);
+	scaleSpin->setMaximum(10000);
+	scaleSpin->setDecimals(10);
 
 	chartView->setRenderHint(QPainter::Antialiasing);
+	chartView->setDragMode(QGraphicsView::RubberBandDrag);
+	chartView->setInteractive(true);
 	chartView->setVisible(false);
 
 	ui->horizontalLayout->addWidget(textBrowser);
 	ui->horizontalLayout->addWidget(chartView);
 
-	QSettings Settings("K-OSP", "Serial-Terminal");
+	ui->mainTool->addSeparator();
+	ui->mainTool->addWidget(scaleSpin);
+
+	Settings.beginGroup("Eval");
+	scaleSpin->setValue(Settings.value("scale", 1.0).toDouble());
+	Settings.endGroup();
+
+	Chart->setScale(scaleSpin->value());
 
 	Settings.beginGroup("Window");
 	restoreGeometry(Settings.value("geometry").toByteArray());
@@ -79,15 +99,45 @@ MainWindow::MainWindow(QWidget* Parent)
 	ui->breakCombo->setItemData(1, QString("\n"));
 	ui->breakCombo->setItemData(2, QString("\r"));
 
-	connect(Connect, &ConnectDialog::onAccepted, this, &MainWindow::configureSerial);
-
 	connect(ui->actionOpen, &QAction::triggered, Connect, &ConnectDialog::open);
 	connect(ui->actionAbout, &QAction::triggered, About, &AboutDialog::open);
+
+	connect(Connect, &ConnectDialog::onAccepted, this, &MainWindow::configureSerial);
 
 	connect(Serial, &QSerialPort::readyRead, this, &MainWindow::readData);
 	connect(Serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
 
+	connect(Chart, &ChartObject::onValueMouseover, this, &MainWindow::updateTooltip);
+
+	connect(chartView, &QChartView::rubberBandChanged, Chart, &ChartObject::bandChanged);
+	connect(chartView, &ChartView::onValueMouseover, this, &MainWindow::updateTooltip);
+
 	connect(group, &QActionGroup::triggered, this, &MainWindow::switchMode);
+
+	connect(ui->actionZoomfit, &QAction::triggered, Chart,
+	[this] (void) -> void
+	{
+		Chart->zoomReset();
+		Chart->format();
+	});
+
+	connect(scaleSpin, &QDoubleSpinBox::editingFinished, this,
+	[this] (void) -> void
+	{
+		Chart->setScale(scaleSpin->value());
+	});
+
+	connect(ui->actionZoomin, &QAction::triggered, Chart,
+	[this] (void) -> void
+	{
+		Chart->zoom(1.1);
+	});
+
+	connect(ui->actionZoomout, &QAction::triggered, Chart,
+	[this] (void) -> void
+	{
+		Chart->zoom(0.9);
+	});
 
 	switchMode();
 }
@@ -108,6 +158,10 @@ MainWindow::~MainWindow(void)
 	Settings.setValue("rawmode", ui->actionRawmode->isChecked());
 	Settings.setValue("plotmode", ui->actionPlotmode->isChecked());
 	Settings.setValue("textmode", ui->actionTextmode->isChecked());
+	Settings.endGroup();
+
+	Settings.beginGroup("Eval");
+	Settings.setValue("scale", scaleSpin->value());
 	Settings.endGroup();
 
 	delete ui;
@@ -135,6 +189,13 @@ void MainWindow::configureSerial(const QString& Port, int Baud, QSerialPort::Par
 
 		errorMessage(Serial->errorString());
 	}
+}
+
+void MainWindow::updateTooltip(const QPointF& point)
+{
+	ui->statusBar->showMessage(QString("x = %1, y = %2")
+						  .arg(point.x())
+						  .arg(point.y()));
 }
 
 void MainWindow::errorMessage(const QString& Message)
@@ -322,7 +383,11 @@ void MainWindow::saveData(void)
 	QFile file(path); QTextStream stream(&file);
 
 	if (!file.open(QFile::WriteOnly | QFile::Text)) return;
-	else stream << textBrowser->toPlainText();
+	else
+	{
+		if (!ui->actionPlotmode->isChecked()) stream << textBrowser->toPlainText();
+		else for (const auto& v : Chart->getValues()) stream << v << Qt::endl;
+	}
 }
 
 void MainWindow::formatData(void)
