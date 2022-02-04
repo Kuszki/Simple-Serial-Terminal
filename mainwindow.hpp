@@ -64,7 +64,9 @@ class MainWindow : public QMainWindow
 		int words = 1;
 		int wtype = 0;
 		int wbase = 10;
+
 		bool msbf = 0;
+        bool timer = 0;
 
 	public:
 

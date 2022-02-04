@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget* Parent)
 	About = new AboutDialog(this);
 
 	Updater.setSingleShot(true);
-	Updater.setInterval(500);
+    Updater.setInterval(250);
 
 	Settings.beginGroup("Chart");
 	Chart = new ChartObject(Settings.value("spline", false).toBool());
@@ -95,6 +95,10 @@ MainWindow::MainWindow(QWidget* Parent)
 	wtype = Settings.value("type", 0).toInt();
 	words = Settings.value("worlds", 1).toInt();
 	Settings.endGroup();
+
+    Settings.beginGroup("Display");
+    timer = Settings.value("timer", false).toBool();
+    Settings.endGroup();
 
 	ui->sendButton->setEnabled(false);
 	ui->textEdit->setEnabled(false);
@@ -175,6 +179,10 @@ MainWindow::~MainWindow(void)
 	Settings.setValue("scale", scaleSpin->value());
 	Settings.endGroup();
 
+    Settings.beginGroup("Display");
+    Settings.setValue("timer", timer);
+    Settings.endGroup();
+
 	delete ui;
 }
 
@@ -229,8 +237,11 @@ void MainWindow::handleError(QSerialPort::SerialPortError Error)
 
 void MainWindow::appendData(const QByteArray& data)
 {
-	chartView->setUpdatesEnabled(false);
-	textBrowser->setUpdatesEnabled(false);
+    if (timer)
+    {
+        chartView->setUpdatesEnabled(false);
+        textBrowser->setUpdatesEnabled(false);
+    }
 
 	if (ui->actionTextmode->isChecked())
 	{
@@ -316,10 +327,9 @@ void MainWindow::appendData(const QByteArray& data)
 		}
 	}
 
-	if (Updater.isActive()) Updater.stop();
+    if (timer && !Updater.isActive()) Updater.start();
 
 	Rawdata.append(data);
-	Updater.start();
 }
 
 void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
