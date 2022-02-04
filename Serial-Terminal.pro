@@ -49,4 +49,4 @@ RESOURCES	+=	resources.qrc
 
 TRANSLATIONS	+=	serial_terminal_pl.ts
 
-QMAKE_CXXFLAGS	+=	-s -march=native
+QMAKE_CXXFLAGS	+=	-march=native
