@@ -19,11 +19,12 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include "mainwindow.hpp"
+#include "qtimer.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* Parent)
-	: QMainWindow(Parent)
-	, ui(new Ui::MainWindow)
+     : QMainWindow(Parent)
+     , ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 
@@ -38,6 +39,9 @@ MainWindow::MainWindow(QWidget* Parent)
 	Serial = new QSerialPort(this);
 	Connect = new ConnectDialog(this);
 	About = new AboutDialog(this);
+
+	Updater.setSingleShot(true);
+	Updater.setInterval(500);
 
 	Settings.beginGroup("Chart");
 	Chart = new ChartObject(Settings.value("spline", false).toBool());
@@ -139,6 +143,13 @@ MainWindow::MainWindow(QWidget* Parent)
 		Chart->zoom(0.9);
 	});
 
+	connect(&Updater, &QTimer::timeout,
+	[this] (void) -> void
+	{
+		chartView->setUpdatesEnabled(true);
+		textBrowser->setUpdatesEnabled(true);
+	});
+
 	switchMode();
 }
 
@@ -194,8 +205,8 @@ void MainWindow::configureSerial(const QString& Port, int Baud, QSerialPort::Par
 void MainWindow::updateTooltip(const QPointF& point)
 {
 	ui->statusBar->showMessage(QString("x = %1, y = %2")
-						  .arg(point.x())
-						  .arg(point.y()));
+	                           .arg(point.x())
+	                           .arg(point.y()));
 }
 
 void MainWindow::errorMessage(const QString& Message)
@@ -218,6 +229,9 @@ void MainWindow::handleError(QSerialPort::SerialPortError Error)
 
 void MainWindow::appendData(const QByteArray& data)
 {
+	chartView->setUpdatesEnabled(false);
+	textBrowser->setUpdatesEnabled(false);
+
 	if (ui->actionTextmode->isChecked())
 	{
 		textBrowser->append(QString::fromLocal8Bit(data));
@@ -282,17 +296,17 @@ void MainWindow::appendData(const QByteArray& data)
 			if (ui->actionRawmode->isChecked())
 			{
 				textBrowser->append(fnConvert(newdata.data(),
-										newdata.length(),
-										10, msbf)
-								.join('\n'));
+				                              newdata.length(),
+				                              10, msbf)
+				                    .join('\n'));
 
 				if (ui->actionAutoscroll->isChecked()) scrollDown();
 			}
 			else
 			{
 				for (const auto& d : fnCast(newdata.data(),
-									   newdata.length(),
-									   msbf))
+				                            newdata.length(),
+				                            msbf))
 				{
 					Chart->appendData(d);
 				}
@@ -302,13 +316,16 @@ void MainWindow::appendData(const QByteArray& data)
 		}
 	}
 
+	if (Updater.isActive()) Updater.stop();
+
 	Rawdata.append(data);
+	Updater.start();
 }
 
 void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
 {
 	if (!(wtype != Type || words != Words ||
-		 wbase != Base || msbf != Order)) return;
+	      wbase != Base || msbf != Order)) return;
 
 	wtype = Type;
 	words = Words;
@@ -327,7 +344,7 @@ void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
 void MainWindow::switchMode(void)
 {
 	textBrowser->setVisible(ui->actionRawmode->isChecked() ||
-					    ui->actionTextmode->isChecked());
+	                        ui->actionTextmode->isChecked());
 
 	chartView->setVisible(ui->actionPlotmode->isChecked());
 
@@ -376,7 +393,7 @@ void MainWindow::clearData(void)
 void MainWindow::saveData(void)
 {
 	const QString path = QFileDialog::getSaveFileName(this,
-		tr("Save data"), QString(), tr("Text files (*.txt);;All files (*.*)"));
+	     tr("Save data"), QString(), tr("Text files (*.txt);;All files (*.*)"));
 
 	if (path.isEmpty()) return;
 
@@ -424,10 +441,10 @@ QStringList MainWindow::convertAs(const void* ptr, size_t len, int base, bool re
 	for (size_t i = 0; i < size; ++i)
 	{
 		list.append(QString::number(
-					  reverse ?
-						  reverseEn(data[i]) :
-						  data[i],
-					  base));
+		                 reverse ?
+		                      reverseEn(data[i]) :
+		                      data[i],
+		                 base));
 	}
 
 	return list;
@@ -472,8 +489,8 @@ QVector<double> MainWindow::castAs(const void* ptr, size_t len, bool reverse)
 	for (size_t i = 0; i < size; ++i)
 	{
 		list.append(reverse ?
-					  reverseEn(data[i]) :
-					  data[i]);
+		                 reverseEn(data[i]) :
+		                 data[i]);
 	}
 
 	return list;

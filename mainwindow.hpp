@@ -46,6 +46,7 @@ class MainWindow : public QMainWindow
 	private:
 
 		QByteArray Rawdata;
+		QTimer Updater;
 
 		QSerialPort* Serial;
 
@@ -74,14 +75,14 @@ class MainWindow : public QMainWindow
 
 		template <typename Data>
 		static QStringList convertAs(const void* ptr,
-							    size_t len,
-							    int base = 10,
-							    bool reverse = false);
+		                             size_t len,
+		                             int base = 10,
+		                             bool reverse = false);
 
 		template <typename Data>
 		static QVector<double> castAs(const void* ptr,
-								size_t len,
-								bool reverse = false);
+		                              size_t len,
+		                              bool reverse = false);
 
 		template <typename Data>
 		static Data reverseEn(const Data& data);
@@ -89,9 +90,9 @@ class MainWindow : public QMainWindow
 	private slots:
 
 		void configureSerial(const QString& Port, int Baud,
-						 QSerialPort::Parity Parity,
-						 QSerialPort::StopBits Stop,
-						 QSerialPort::DataBits Size);
+		                     QSerialPort::Parity Parity,
+		                     QSerialPort::StopBits Stop,
+		                     QSerialPort::DataBits Size);
 
 		void updateTooltip(const QPointF& point);
 
