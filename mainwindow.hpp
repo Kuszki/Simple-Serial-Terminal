@@ -66,7 +66,7 @@ class MainWindow : public QMainWindow
 		int wbase = 10;
 
 		bool msbf = 0;
-        bool timer = 0;
+		bool timer = 0;
 
 	public:
 
@@ -113,6 +113,7 @@ class MainWindow : public QMainWindow
 		void formatData(void);
 
 		void closeClicked(void);
+		void statsClicked(void);
 
 		void scrollDown(void);
 

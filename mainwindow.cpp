@@ -23,8 +23,8 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* Parent)
-     : QMainWindow(Parent)
-     , ui(new Ui::MainWindow)
+: QMainWindow(Parent)
+, ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget* Parent)
 	About = new AboutDialog(this);
 
 	Updater.setSingleShot(true);
-    Updater.setInterval(250);
+	Updater.setInterval(250);
 
 	Settings.beginGroup("Chart");
 	Chart = new ChartObject(Settings.value("spline", false).toBool());
@@ -96,9 +96,9 @@ MainWindow::MainWindow(QWidget* Parent)
 	words = Settings.value("worlds", 1).toInt();
 	Settings.endGroup();
 
-    Settings.beginGroup("Display");
-    timer = Settings.value("timer", false).toBool();
-    Settings.endGroup();
+	Settings.beginGroup("Display");
+	timer = Settings.value("timer", false).toBool();
+	Settings.endGroup();
 
 	ui->sendButton->setEnabled(false);
 	ui->textEdit->setEnabled(false);
@@ -179,9 +179,9 @@ MainWindow::~MainWindow(void)
 	Settings.setValue("scale", scaleSpin->value());
 	Settings.endGroup();
 
-    Settings.beginGroup("Display");
-    Settings.setValue("timer", timer);
-    Settings.endGroup();
+	Settings.beginGroup("Display");
+	Settings.setValue("timer", timer);
+	Settings.endGroup();
 
 	delete ui;
 }
@@ -237,11 +237,11 @@ void MainWindow::handleError(QSerialPort::SerialPortError Error)
 
 void MainWindow::appendData(const QByteArray& data)
 {
-    if (timer)
-    {
-        chartView->setUpdatesEnabled(false);
-        textBrowser->setUpdatesEnabled(false);
-    }
+	if (timer)
+	{
+		chartView->setUpdatesEnabled(false);
+		textBrowser->setUpdatesEnabled(false);
+	}
 
 	if (ui->actionTextmode->isChecked())
 	{
@@ -327,7 +327,7 @@ void MainWindow::appendData(const QByteArray& data)
 		}
 	}
 
-    if (timer && !Updater.isActive()) Updater.start();
+	if (timer && !Updater.isActive()) Updater.start();
 
 	Rawdata.append(data);
 }
@@ -403,7 +403,7 @@ void MainWindow::clearData(void)
 void MainWindow::saveData(void)
 {
 	const QString path = QFileDialog::getSaveFileName(this,
-	     tr("Save data"), QString(), tr("Text files (*.txt);;All files (*.*)"));
+	                                                  tr("Save data"), QString(), tr("Text files (*.txt);;All files (*.*)"));
 
 	if (path.isEmpty()) return;
 
@@ -431,6 +431,39 @@ void MainWindow::closeClicked(void)
 
 	ui->sendButton->setEnabled(false);
 	ui->textEdit->setEnabled(false);
+}
+
+void MainWindow::statsClicked(void)
+{
+	const auto vs = Chart->getValues();
+
+	if (vs.isEmpty()) return;
+
+	const double mul = 1.0 / vs.size();
+	double
+	          max = vs.first(),
+	          min = vs.first(),
+	          mean = 0.0,
+	          var = 0.0;
+
+	for (const auto& v : vs)
+	{
+		if (max < v) max = v;
+		if (min > v) min = v;
+
+		mean = mean + mul * v;
+	}
+
+	for (const auto& v : vs)
+	{
+		const double pw = v - mean;
+		var = var + mul * pw * pw;
+	}
+
+	const double stdev = qSqrt(var);
+
+	ui->statusBar->showMessage(tr("min = %1; max = %2; mean = %3; stdev = %4; var = %5")
+	                           .arg(min).arg(max).arg(mean).arg(stdev).arg(var));
 }
 
 void MainWindow::scrollDown(void)
