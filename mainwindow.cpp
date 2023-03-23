@@ -100,6 +100,10 @@ MainWindow::MainWindow(QWidget* Parent)
 	timer = Settings.value("timer", false).toBool();
 	Settings.endGroup();
 
+	Settings.beginGroup("Dialogs");
+	lastSaveDir = Settings.value("save").toString();
+	Settings.endGroup();
+
 	ui->sendButton->setEnabled(false);
 	ui->textEdit->setEnabled(false);
 
@@ -183,6 +187,10 @@ MainWindow::~MainWindow(void)
 	Settings.setValue("timer", timer);
 	Settings.endGroup();
 
+	Settings.beginGroup("Dialogs");
+	Settings.setValue("save", lastSaveDir);
+	Settings.endGroup();
+
 	delete ui;
 }
 
@@ -213,8 +221,8 @@ void MainWindow::configureSerial(const QString& Port, int Baud, QSerialPort::Par
 void MainWindow::updateTooltip(const QPointF& point)
 {
 	ui->statusBar->showMessage(QString("x = %1, y = %2")
-	                           .arg(point.x())
-	                           .arg(point.y()));
+						  .arg(point.x())
+						  .arg(point.y()));
 }
 
 void MainWindow::errorMessage(const QString& Message)
@@ -307,17 +315,17 @@ void MainWindow::appendData(const QByteArray& data)
 			if (ui->actionRawmode->isChecked())
 			{
 				textBrowser->append(fnConvert(newdata.data(),
-				                              newdata.length(),
-				                              10, msbf)
-				                    .join('\n'));
+										newdata.length(),
+										10, msbf)
+								.join('\n'));
 
 				if (ui->actionAutoscroll->isChecked()) scrollDown();
 			}
 			else
 			{
 				for (const auto& d : fnCast(newdata.data(),
-				                            newdata.length(),
-				                            msbf))
+									   newdata.length(),
+									   msbf))
 				{
 					Chart->appendData(d);
 				}
@@ -335,7 +343,7 @@ void MainWindow::appendData(const QByteArray& data)
 void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
 {
 	if (!(wtype != Type || words != Words ||
-	      wbase != Base || msbf != Order)) return;
+		 wbase != Base || msbf != Order)) return;
 
 	wtype = Type;
 	words = Words;
@@ -354,7 +362,7 @@ void MainWindow::switchFormat(int Type, int Words, int Base, bool Order)
 void MainWindow::switchMode(void)
 {
 	textBrowser->setVisible(ui->actionRawmode->isChecked() ||
-	                        ui->actionTextmode->isChecked());
+					    ui->actionTextmode->isChecked());
 
 	chartView->setVisible(ui->actionPlotmode->isChecked());
 
@@ -403,9 +411,10 @@ void MainWindow::clearData(void)
 void MainWindow::saveData(void)
 {
 	const QString path = QFileDialog::getSaveFileName(this,
-	                                                  tr("Save data"), QString(), tr("Text files (*.txt);;All files (*.*)"));
+		tr("Save data"), lastSaveDir, tr("Text files (*.txt);;All files (*.*)"));
 
 	if (path.isEmpty()) return;
+	else lastSaveDir = QFileInfo(path).absolutePath();
 
 	QFile file(path); QTextStream stream(&file);
 
@@ -441,10 +450,10 @@ void MainWindow::statsClicked(void)
 
 	const double mul = 1.0 / vs.size();
 	double
-	          max = vs.first(),
-	          min = vs.first(),
-	          mean = 0.0,
-	          var = 0.0;
+			max = vs.first(),
+			min = vs.first(),
+			mean = 0.0,
+			var = 0.0;
 
 	for (const auto& v : vs)
 	{
@@ -463,7 +472,7 @@ void MainWindow::statsClicked(void)
 	const double stdev = qSqrt(var);
 
 	ui->statusBar->showMessage(tr("min = %1; max = %2; mean = %3; stdev = %4; var = %5")
-	                           .arg(min).arg(max).arg(mean).arg(stdev).arg(var));
+						  .arg(min).arg(max).arg(mean).arg(stdev).arg(var));
 }
 
 void MainWindow::scrollDown(void)
@@ -484,10 +493,10 @@ QStringList MainWindow::convertAs(const void* ptr, size_t len, int base, bool re
 	for (size_t i = 0; i < size; ++i)
 	{
 		list.append(QString::number(
-		                 reverse ?
-		                      reverseEn(data[i]) :
-		                      data[i],
-		                 base));
+					  reverse ?
+						  reverseEn(data[i]) :
+						  data[i],
+					  base));
 	}
 
 	return list;
@@ -532,8 +541,8 @@ QVector<double> MainWindow::castAs(const void* ptr, size_t len, bool reverse)
 	for (size_t i = 0; i < size; ++i)
 	{
 		list.append(reverse ?
-		                 reverseEn(data[i]) :
-		                 data[i]);
+					  reverseEn(data[i]) :
+					  data[i]);
 	}
 
 	return list;
